@@ -94,3 +94,92 @@ Use the collisionCtx you have created before and replace the ctx of fillStyle an
 Just like ctx in animate, you need to clear the previous drawn frames of collisionCtx in animate as well
 getImageData is scanning canvas for pixel data
 Currently you are scanning the main canvas(canvas1) for pixel data, scan collisionCtx instead
+Using inspect in the browser, you can see the data property when you click on the ImageData object
+To capture this data property, create a constant variable called pc in the event listener and assign the property of this data to it
+For now, we will check for collision between cursor and the raven objects, using rgb values
+Do a loop on the ravens array using forEach and for each object, run the if condition where the array item on each object.randomColors match the color of their corresponding data property(i.e r to r, g to g, b to b), there is collision and so set markedForDeletion of the object to true
+Also, increment score variable to show that user score a point
+Set opacity of collision canvas in css to 0 to remove the border around it and uncomment the rainbow background to reinstate it
+You should be able to click the raven or abit around the raven and make them disappear and score should increase for each click on the raven
+Now we want to add sound effects when clicking on the ravens to give a feeling of 'shooting' the ravens, and to add an after effect of 'eliminating' the ravens
+Create an explosions variable and assign an empty array
+Create an Explosions class with x,y and size arguments because it will be dependent on the position and dimensions of the raven object
+Add a property called image to the class an assign new Image() to it, sourcing the after effect image of your choice when clicking on the ravens
+Add the properties of the sprite's width and height that you have sourced
+x, y, and size will be assigned to itself(the arguments in this case) because the values will be extracted from outside the class
+Add frame property and set it to 0
+Add sound property and assign new Audio() to it, sourcing the sound effect you want when clicking on the ravens
+Add property timeSinceLastFrame and set it to 0
+Add property frameInterval and set it to 200
+Add the update method on this class just like you did for Raven class and pass the deltaTime argument on it similarly
+Increment timeSinceLastFrame by deltaTime in update
+Add an if condition if timeSinceLastFrame is more than frameInterval, increment frame
+Add an if condition at the start of update when frame becomes 0 is true, use the built in play method on sound
+Now add a draw method with drawImage on the main canvas, not the collision canvas
+Use the same parameters as Ravens(not technically the same as you are using it for the boom sprite sheet) EXCEPT for x, y, width and height(dx, dy, dw, dh) since you are using the object values from outside the class
+x will still be x, same for y but dw and dh will be assigned to the size property you created in the constructor, which is linked to the argument in the class
+Now we will need to trigger this explosion sfx somewhere in the event listener
+Since we only want it to happen when a raven is 'eliminated', you should place it in the if condition for the rgb detection
+Use the push method on the explosions array and pass new Explosion() to it
+Remember we are using the values of x,y and width from the Raven class, so for the arguments in this push method in the forEach loop, pass the x,y and width to it
+To update the explosions array, spread the explosions array in the array literals in animate function
+Just like the ravens array, filter the explosions array the same way
+Add markedForDeletion property since you do not have it in Explosion class and set it to false
+Add an additional if condition in the timeSinceLastFrame if condition where after incrementing the frame, if frame is more than 5(the total boom sprite length), markedForDeletion is set to true
+Currently when you play the game, if you change your frameInterval to a higher value like 500, notice that the explosions is slower but the ravens still move fast which makes it jarring since the explosions and ravens seem 'disconnected'
+To fix this, set timeSinceLastFrame back to 0 after each frame increment in the update method in Explosion class
+The alignment of the explosion with the raven seems abit disjointed(explosion places itself a little bit below the raven)
+To fix this, offset sy of Explosion in drawImage by the size property divided by 4(or whatever number you deem visually aligned)
+Now we shall create a game over scenario
+Create gameOver global variable and set it to false
+Add an if condition in Raven class under update where if x is less than 0 offsetted by the width of the raven(if raven passes through the canvas completely), gameOver will be set to true
+To invoke the gameOver scenario, add an if condition in animate where if gameOver is false, requestAnimationFrame will run. If not, requestAnimationFrame will not run
+Your game should stop now once a raven crosses the canvas completely
+Now we will show a game over message once gameOver is true
+Create a drawGameOver function
+Add fillStyle of black to the canvas
+Use the fillText method on the canvas and show the message game over message and concatenate the score to dispaly them. Dividing the width and the height of the canvas in the width and height arguments will showcase the message in the middle of the screen
+To call the above function, add it as an else condition in the gameOver condition
+The displayed message is not exactly centered as it is using the top and left side of the canvas to push the message by half of each to approximately the center
+To fix this, add a textAlign built in method on the canvas and set it to center
+To create a shadow like your score, add a second set of fillStyle with a contrasting color and offset the second set of fillText after the division of canvas.width and height respectively
+\*\*Optional experimentation with array and class to solidify knowledge learned when creating the Raven and Explosion class
+Create particles variable and give it an empty array
+Create Particle class and pass the x, y, size, and color arguments to it
+Add x, y, size, and color property and assign all of them to themselves
+Add radius and maxRadius properties as the particles will be circular
+radius will be a randomised number of size divided by 10
+maxRadius will be a random number between 35 and 55
+Add the markedForDeletion property and set it to false
+Add a speedX property and give it a random number from 0.5 to 1.5 as the particle will be drifting to the right as the ravens move to the left
+Create update method and in it, increment x by speedX
+Increment radius by 0.2
+If radius is more than maxRadius, markedForDeletion is set to true
+Create a draw method and pass the beginPath method to the main canvas
+Use the fillStyle method on the canvas and assign it the color property
+Use the arc method on the canvas and pass the xy position, the radius, the start angle of 0 and an end angle of Math.PI multiplied by 2(which is basically a circle)
+Use the fill method on the canvas
+The particle class is complete and since you want the particles to follow the ravens as they move to the left, you want to invoke the condition in the raven class where the raven is 'moving'
+In the double if condition, everytime the frame is incremented, push new Particle with the x,y,width, and color arguments of the Raven class to the particles array
+Just like the other classes, spread the particles array in the array literals in animate
+Do the same for filter
+Move size in Particle class to the top for other properties to use it in their calculations
+Add size divided by 2 to x property
+Add size divided by 3 to y property
+This will make particle appear behind the ravens
+The order in which you spread also decides how you want javascript to layer your animations
+Spreading particles at the start of the array literals before the other 2 classes will make it appear first then the rest
+Change the increment of radius in update to higher values to get bigger particles and vice versa
+Creating particles for all ravens will cause performance issues,
+we will now create a property to randomise the particle sizes and what percentage of ravens will have it
+Add a hasTrail property in Raven class and assign it a boolean condition where whenever the random number is more than 0.5(from 0 to 1), hasTrail is true(which means half the ravens will have a trail of particles)
+Move the particles.push into a new if condition where if hasTrail is true, invoke the push method
+We now want the particles to slowly disappear at the end of the trail
+Add a globalAlpha property to canvas in the Particle class under draw method
+Assign 1 minus the radius divided by max radius
+When the radius is the same size as the max radius due to the incrementing radius in update, 1 minus 1 will cause globalAlpha to become 0 which is means opacity is 0 (1 is fully opaque)
+Once the above is applied, globalAlpha will be applied to both your ravens and particles
+To only target the particles, wrap the save and restore methods in the draw function at the start and the end respectively
+save method will create a snapshot of canvas global settings while calling restore will revert the canvas to what they were before
+\\Im using linux the particles aren't appearing will test it in windows to see if particles appear
+\\Using VM for linux so the rainbow background actually makes me lag so i disabled it
