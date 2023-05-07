@@ -182,4 +182,5 @@ Once the above is applied, globalAlpha will be applied to both your ravens and p
 To only target the particles, wrap the save and restore methods in the draw function at the start and the end respectively
 save method will create a snapshot of canvas global settings while calling restore will revert the canvas to what they were before
 \\Im using linux the particles aren't appearing will test it in windows to see if particles appear
+\\Its the same for windows i will need to re-watch the video in the particles section
 \\Using VM for linux so the rainbow background actually makes me lag so i disabled it
