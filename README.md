@@ -184,3 +184,16 @@ save method will create a snapshot of canvas global settings while calling resto
 \\Im using linux the particles aren't appearing will test it in windows to see if particles appear
 \\Its the same for windows i will need to re-watch the video in the particles section
 \\Using VM for linux so the rainbow background actually makes me lag so i disabled it
+\\\Alright i misspelled constructor (was constuctor before)
+\\\I was writing the readme but i forgot to add the hasTrail property so particles would not appear
+\\\Solved!
+Notice that some of your particles are blinking for they disappear, this is because js runs over the entire array before filtering the particles that are too large out.
+The globalAlpha method works only from the between the range 0 to maxRadius, so particles that exceed maxRadius becomes fully opaque before they get filtered
+To fix it, you trigger markedForDeletion in the if condition a little sooner by offsetting the maxRadius in the condition by a number
+To make the trail look 'more like a trail', add a for loop in the hasTrail condition in Raven class update with a limit of 5.
+Move and place the particles.push method into it
+\\As usual, colored backgrounds/particles seems to kill performance with linux VM, lags everytime they appear
+To try and reduce the lag, i will reduce the size of the radius increments in Particle class under update
+You can randomise the position of xy in Particle by adding a random number between 2 numbers using the Math.random technique(Remember between a negative number and positive will move it left and right on the x axis and up down on the y axis)
+This will cause the circles inside the trail to be randomly generated across the path
+Done! (sorta)

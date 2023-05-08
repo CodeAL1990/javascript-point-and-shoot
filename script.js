@@ -40,6 +40,7 @@ class Raven {
       Math.floor(Math.random() * 255),
     ];
     this.color = `rgb(${this.randomColors[0]}, ${this.randomColors[1]}, ${this.randomColors[2]})`;
+    this.hasTrail = Math.random() > 0.5;
   }
   update(deltaTime) {
     if (this.y < 0 || this.y > canvas.height - this.height) {
@@ -54,7 +55,9 @@ class Raven {
       else this.frame++;
       this.timeSinceFlap = 0;
       if (this.hasTrail) {
-        particles.push(new Particle(this.x, this.y, this.width, this.color));
+        for (let i = 0; i < 5; i++) {
+          particles.push(new Particle(this.x, this.y, this.width, this.color));
+        }
       }
     }
     if (this.x < 0 - this.width) gameOver = true;
@@ -119,10 +122,10 @@ class Explosion {
 
 let particles = [];
 class Particle {
-  constuctor(x, y, size, color) {
+  constructor(x, y, size, color) {
     this.size = size;
-    this.x = x + this.size / 2;
-    this.y = y + this.size / 3;
+    this.x = x + this.size / 2 + Math.random() * 50 - 25;
+    this.y = y + this.size / 3 + Math.random() * 50 - 25;
     this.color = color;
     this.radius = (Math.random() * this.size) / 10;
     this.maxRadius = Math.random() * 20 + 35;
@@ -131,8 +134,8 @@ class Particle {
   }
   update() {
     this.x += this.speedX;
-    this.radius += 0.5;
-    if (this.radius > this.maxRadius) this.markedForDeletion = true;
+    this.radius += 0.3;
+    if (this.radius > this.maxRadius - 5) this.markedForDeletion = true;
   }
   draw() {
     ctx.save();
